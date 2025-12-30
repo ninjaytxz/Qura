@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qura - Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/options.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Navigation -->
+    <header class="main-header">
+      <div class="header-content">
+        <div class="logo">
+			<span class="logo-text">qura</span>
+		</div>
+        
+        <nav class="header-nav">
+          <button class="nav-tab active" data-section="sessions">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            <span>Sessions</span>
+          </button>
+          <button class="nav-tab" data-section="statistics">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            <span>Statistics</span>
+          </button>
+          <button class="nav-tab" data-section="settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span>Settings</span>
+          </button>
+        </nav>
+
+                <div class="header-actions">
+          <button class="header-btn" id="how-it-works-btn" title="How it works">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <span>How it works</span>
+          </button>
+          <div class="header-version">v1.0.0</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Sessions Section -->
+      <section id="sessions-section" class="content-section active">
+        <div class="section-header">
+          <h1>Sessions</h1>
+          <button class="btn btn-primary" id="create-session-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>New Session</span>
+          </button>
+        </div>
+
+        <div class="sessions-grid" id="sessions-grid"></div>
+
+        <div class="empty-state" id="sessions-empty" style="display: none;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          <h3>No Sessions Yet</h3>
+          <p>Create your first focus session to get started</p>
+        </div>
+      </section>
+
+      <!-- Statistics Section -->
+      <section id="statistics-section" class="content-section">
+        <div class="section-header">
+          <h1>Statistics</h1>
+        </div>
+
+        <div class="stats-cards">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12,6 12,12 16,14"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Focus Time</span>
+              <span class="stat-value" id="stat-total-time">0h 0m</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,11 12,14 22,4"/>
+                <path d="M21,12v7a2,2,0,0,1-2,2H5a2,2,0,0,1-2-2V5A2,2,0,0,1,5,3H16"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Tasks Completed</span>
+              <span class="stat-value" id="stat-tasks-completed">0</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22,12h-4l-3,9L9,3l-3,9H2"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Sessions Completed</span>
+              <span class="stat-value" id="stat-sessions-completed">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-header">
+            <div class="chart-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <span>Weekly Overview</span>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-dot"></span>Focus Time</span>
+            </div>
+          </div>
+          <div class="chart-area" id="chart-area">
+            <div class="bar-chart" id="bar-chart"></div>
+          </div>
+        </div>
+
+        <div class="breakdown-section">
+          <h3>Session Breakdown</h3>
+          <div class="breakdown-list" id="session-breakdown"></div>
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section id="settings-section" class="content-section">
+        <div class="section-header">
+          <h1>Settings</h1>
+        </div>
+
+        <div class="settings-grid">
+          <!-- Theme Customization -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="13.5" cy="6.5" r="2.5"/>
+                <circle cx="17.5" cy="10.5" r="2.5"/>
+                <circle cx="8.5" cy="7.5" r="2.5"/>
+                <circle cx="6.5" cy="12.5" r="2.5"/>
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+              </svg>
+              <h3>Theme Customization</h3>
+            </div>
+            <div class="settings-card-content">
+              <div class="theme-grid">
+                <div class="theme-color-group">
+                  <label>Accent Color</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="accent-color" value="#C4A7E7">
+                    <span class="color-value" id="accent-color-value">#C4A7E7</span>
+                  </div>
+                </div>
+                <div class="theme-color-group">
+                  <label>Background</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="bg-color" value="#0d0d0f">
+                    <span class="color-value" id="bg-color-value">#0d0d0f</span>
+                  </div>
+                </div>
+                <div class="theme-color-group">
+                  <label>Card Background</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="card-color" value="#16161a">
+                    <span class="color-value" id="card-color-value">#16161a</span>
+                  </div>
+                </div>
+                <div class="theme-color-group">
+                  <label>Text Primary</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="text-color" value="#f5f5f7">
+                    <span class="color-value" id="text-color-value">#f5f5f7</span>
+                  </div>
+                </div>
+              </div>
+              <div class="theme-presets">
+                <label>Presets</label>
+                <div class="preset-buttons">
+                  <button class="preset-btn" data-preset="purple">Purple (Default)</button>
+                  <button class="preset-btn" data-preset="blue">Ocean Blue</button>
+                  <button class="preset-btn" data-preset="green">Forest Green</button>
+                  <button class="preset-btn" data-preset="orange">Sunset Orange</button>
+                  <button class="preset-btn" data-preset="pink">Rose Pink</button>
+                </div>
+              </div>
+              <button class="btn btn-secondary" id="save-theme-btn">Save Theme</button>
+            </div>
+          </div>
+
+          <!-- Blocked Page Message -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+              </svg>
+              <h3>Blocked Page Message</h3>
+            </div>
+            <div class="settings-card-content">
+              <div class="form-group">
+                <label for="blocked-message">Custom message shown when a site is blocked</label>
+                <textarea id="blocked-message" rows="3" placeholder="Stay focused! This site is blocked during your focus session."></textarea>
+              </div>
+              <button class="btn btn-secondary" id="save-message-btn">Save Message</button>
+            </div>
+          </div>
+
+          <!-- YouTube Shorts Blocker -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/>
+                <polygon points="9.75,15.02 15.5,11.75 9.75,8.48"/>
+              </svg>
+              <h3>YouTube Shorts Blocker</h3>
+            </div>
+            <div class="settings-card-content">
+              <div class="setting-row">
+                <div class="setting-info">
+                  <span class="setting-label">Block YouTube Shorts</span>
+                  <span class="setting-desc">Hide Shorts from YouTube and redirect /shorts URLs</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="youtube-shorts-toggle">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- About & Links -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              <h3>About Qura</h3>
+            </div>
+            <div class="settings-card-content">
+              <div class="setting-row">
+                <div class="setting-info">
+                  <span class="setting-label">GitHub Repository</span>
+                  <span class="setting-desc">View source code, report issues, or contribute</span>
+                </div>
+                <a href="https://github.com/ninjaytxz/Qura" target="_blank" class="btn btn-secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                  View on GitHub
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Management -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              </svg>
+              <h3>Data Management</h3>
+            </div>
+            <div class="settings-card-content">
+              <div class="setting-row">
+                <div class="setting-info">
+                  <span class="setting-label">Export Data</span>
+                  <span class="setting-desc">Download all your sessions and statistics</span>
+                </div>
+                <button class="btn btn-secondary" id="export-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7,10 12,15 17,10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  Export
+                </button>
+              </div>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <span class="setting-label">Import Data</span>
+                  <span class="setting-desc">Restore from a previous export</span>
+                </div>
+                <label class="btn btn-secondary file-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17,8 12,3 7,8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  Import
+                  <input type="file" id="import-input" accept=".json" hidden>
+                </label>
+              </div>
+              <div class="setting-row danger">
+                <div class="setting-info">
+                  <span class="setting-label">Reset All Data</span>
+                  <span class="setting-desc">Clear all sessions, tasks, and statistics</span>
+                </div>
+                <button class="btn btn-danger" id="reset-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3,6 5,6 21,6"/>
+                    <path d="m19,6-.867,12.142A2,2,0,0,1,16.138,20H7.862a2,2,0,0,1-1.995-1.858L5,6m5,0V4a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1v2"/>
+                  </svg>
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Session Modal -->
+  <div class="modal-overlay" id="session-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Create Session</h2>
+        <button class="modal-close" id="modal-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="session-id">
+        
+        <div class="form-group">
+          <label for="session-name">Session Name</label>
+          <input type="text" id="session-name" placeholder="e.g., Work Focus, Study Time">
+        </div>
+
+        <div class="form-group">
+          <label>Session Color</label>
+          <div class="color-picker" id="color-picker">
+            <button class="color-option active" data-color="#C4A7E7" style="background: #C4A7E7"></button>
+            <button class="color-option" data-color="#F38BA8" style="background: #F38BA8"></button>
+            <button class="color-option" data-color="#FAB387" style="background: #FAB387"></button>
+            <button class="color-option" data-color="#F9E2AF" style="background: #F9E2AF"></button>
+            <button class="color-option" data-color="#A6E3A1" style="background: #A6E3A1"></button>
+            <button class="color-option" data-color="#94E2D5" style="background: #94E2D5"></button>
+            <button class="color-option" data-color="#89B4FA" style="background: #89B4FA"></button>
+            <button class="color-option" data-color="#CBA6F7" style="background: #CBA6F7"></button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Whitelisted Websites</label>
+          <div class="websites-input-wrapper">
+            <input type="text" id="website-add-input" placeholder="Enter website (e.g., github.com)">
+            <button class="btn btn-icon" id="add-website-modal-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+          </div>
+          <div class="websites-list" id="websites-list"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="modal-save">Save Session</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="confirm-modal">
+    <div class="modal confirm-modal-box">
+      <div class="modal-header">
+        <h2 id="confirm-title">Confirm</h2>
+        <button class="modal-close" id="confirm-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message">Are you sure?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="confirm-cancel">Cancel</button>
+        <button class="btn btn-danger" id="confirm-action">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- How it Works Modal -->
+  <div class="modal-overlay" id="how-it-works-modal">
+    <div class="modal how-it-works-modal-box">
+      <div class="modal-header">
+        <h2>How Qura Works</h2>
+        <button class="modal-close" id="how-it-works-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body how-it-works-content">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <h4>Smart Website Blocking</h4>
+            <p>When a focus session is active, Qura blocks <strong>all websites by default</strong> except the ones you've whitelisted. This ensures you only access sites you actually need for your work.</p>
+          </div>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <h4>Multiple Sessions</h4>
+            <p>Create different focus sessions for different contexts (Work, Study, Creative). Each session has its own whitelist and color for easy identification.</p>
+          </div>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9,11 12,14 22,4"/>
+              <path d="M21,12v7a2,2,0,0,1-2,2H5a2,2,0,0,1-2-2V5A2,2,0,0,1,5,3H16"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <h4>Task Sidebar</h4>
+            <p>When a session is running, click the floating button on any page to open a task sidebar. Add, complete, and manage tasks without leaving your current tab.</p>
+          </div>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <h4>Statistics & Tracking</h4>
+            <p>Track your focus time, completed tasks, and sessions. View your weekly progress chart and session breakdown to stay motivated.</p>
+          </div>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <h4>Full Customization</h4>
+            <p>Personalize your experience with custom themes, accent colors, and blocked page messages. Make Qura truly yours.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="how-it-works-got-it">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Credit -->
+  <footer class="app-footer">
+    <p>Made with <span class="heart">❤</span> by <a href="https://www.ninjaytxz.com/" target="_blank">NINJAYTXZ</a></p>
+  </footer>
+
+  <!-- Ko-fi Donation Button -->
+  <a href="https://ko-fi.com/ninjaytxz" target="_blank" class="kofi-button" id="kofi-button" title="Support on Ko-fi">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/>
+    </svg>
+    <span>Support</span>
+  </a>
+
+  <script src="../js/options.js"></script>
+</body>
+</html>

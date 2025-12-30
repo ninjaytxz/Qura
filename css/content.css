@@ -1,0 +1,314 @@
+/* Qura - Content Script Styles */
+
+:root {
+  --qura-bg-dark: #0d0d0f;
+  --qura-bg-card: #16161a;
+  --qura-bg-elevated: #1e1e24;
+  --qura-bg-input: #252530;
+  --qura-text-primary: #f5f5f7;
+  --qura-text-secondary: #9898a6;
+  --qura-text-muted: #6b6b78;
+  --qura-accent: #C4A7E7;
+  --qura-accent-hover: #B394D9;
+  --qura-success: #A6E3A1;
+  --qura-warning: #F9E2AF;
+  --qura-error: #F38BA8;
+  --qura-border: rgba(255, 255, 255, 0.08);
+  --qura-font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+#qura-floating-btn {
+  position: fixed !important;
+  right: 20px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, var(--qura-accent), var(--qura-accent-hover)) !important;
+  color: #1a1a1e !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 2147483646 !important;
+  box-shadow: 0 4px 20px rgba(196, 167, 231, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: none !important;
+  outline: none !important;
+}
+
+#qura-floating-btn:hover {
+  transform: translateY(-50%) scale(1.08) !important;
+  box-shadow: 0 6px 28px rgba(196, 167, 231, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+#qura-floating-btn:active { transform: translateY(-50%) scale(0.95) !important; }
+
+#qura-floating-btn svg {
+  width: 24px !important;
+  height: 24px !important;
+  stroke: #1a1a1e !important;
+  fill: none !important;
+}
+
+#qura-sidebar {
+  position: fixed !important;
+  right: -380px !important;
+  top: 0 !important;
+  width: 360px !important;
+  height: 100vh !important;
+  background: var(--qura-bg-dark) !important;
+  z-index: 2147483647 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  font-family: var(--qura-font) !important;
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.5) !important;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-left: 1px solid var(--qura-border) !important;
+}
+
+#qura-sidebar.visible { right: 0 !important; }
+
+.qura-sidebar-header {
+  padding: 20px 20px 20px 16px !important;
+  background: var(--qura-bg-card) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-bottom: 1px solid var(--qura-border) !important;
+}
+
+.qura-session-info { display: flex !important; flex-direction: column !important; gap: 4px !important; }
+.qura-session-name { font-size: 16px !important; font-weight: 600 !important; color: var(--qura-text-primary) !important; }
+
+.qura-timer {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  color: var(--qura-accent) !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: 0.02em !important;
+}
+
+.qura-close-btn {
+  width: 36px !important;
+  height: 36px !important;
+  border: none !important;
+  background: var(--qura-bg-input) !important;
+  border-radius: 8px !important;
+  color: var(--qura-text-secondary) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+}
+
+.qura-close-btn:hover { background: var(--qura-bg-elevated) !important; color: var(--qura-text-primary) !important; }
+
+.qura-sidebar-content { flex: 1 !important; overflow-y: auto !important; padding: 20px !important; }
+
+.qura-tasks-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 16px !important;
+}
+
+.qura-tasks-header h3 {
+  margin: 0 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--qura-text-primary) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.qura-task-count {
+  font-size: 13px !important;
+  color: var(--qura-text-muted) !important;
+  background: var(--qura-bg-input) !important;
+  padding: 4px 10px !important;
+  border-radius: 12px !important;
+}
+
+.qura-add-task { display: flex !important; gap: 8px !important; margin-bottom: 20px !important; }
+
+.qura-add-task input {
+  flex: 1 !important;
+  background: var(--qura-bg-input) !important;
+  border: 1px solid var(--qura-border) !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  font-size: 14px !important;
+  color: var(--qura-text-primary) !important;
+  font-family: var(--qura-font) !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.qura-add-task input::placeholder { color: var(--qura-text-muted) !important; }
+.qura-add-task input:focus { border-color: var(--qura-accent) !important; box-shadow: 0 0 0 3px rgba(196, 167, 231, 0.15) !important; }
+
+#qura-add-task-btn {
+  width: 44px !important;
+  height: 44px !important;
+  border: none !important;
+  background: var(--qura-accent) !important;
+  border-radius: 10px !important;
+  color: #1a1a1e !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+#qura-add-task-btn:hover { background: var(--qura-accent-hover) !important; transform: scale(1.05) !important; }
+
+.qura-task-list {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.qura-task-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 14px !important;
+  background: var(--qura-bg-card) !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--qura-border) !important;
+  transition: all 0.2s ease !important;
+}
+
+.qura-task-item:hover { background: var(--qura-bg-elevated) !important; }
+.qura-task-item.completed .qura-task-text { text-decoration: line-through !important; color: var(--qura-text-muted) !important; }
+
+.qura-checkbox {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  flex-shrink: 0 !important;
+}
+
+.qura-checkbox input {
+  position: absolute !important;
+  opacity: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+}
+
+.qura-checkmark {
+  width: 22px !important;
+  height: 22px !important;
+  border: 2px solid var(--qura-text-muted) !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+}
+
+.qura-checkbox input:checked + .qura-checkmark { background: var(--qura-accent) !important; border-color: var(--qura-accent) !important; }
+
+.qura-checkbox input:checked + .qura-checkmark::after {
+  content: '' !important;
+  width: 6px !important;
+  height: 10px !important;
+  border: solid #1a1a1e !important;
+  border-width: 0 2px 2px 0 !important;
+  transform: rotate(45deg) translateY(-1px) !important;
+}
+
+.qura-task-text {
+  flex: 1 !important;
+  font-size: 14px !important;
+  color: var(--qura-text-primary) !important;
+  word-break: break-word !important;
+  line-height: 1.4 !important;
+}
+
+.qura-edit-input {
+  flex: 1 !important;
+  background: var(--qura-bg-input) !important;
+  border: 1px solid var(--qura-accent) !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  font-size: 14px !important;
+  color: var(--qura-text-primary) !important;
+  font-family: var(--qura-font) !important;
+  outline: none !important;
+}
+
+.qura-task-actions { display: flex !important; gap: 4px !important; opacity: 0 !important; transition: opacity 0.2s ease !important; }
+.qura-task-item:hover .qura-task-actions { opacity: 1 !important; }
+
+.qura-edit-btn, .qura-delete-btn {
+  width: 28px !important;
+  height: 28px !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 6px !important;
+  color: var(--qura-text-muted) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+}
+
+.qura-edit-btn:hover { background: var(--qura-bg-input) !important; color: var(--qura-accent) !important; }
+.qura-delete-btn:hover { background: rgba(243, 139, 168, 0.15) !important; color: var(--qura-error) !important; }
+
+.qura-no-tasks {
+  text-align: center !important;
+  color: var(--qura-text-muted) !important;
+  font-size: 14px !important;
+  padding: 32px 20px !important;
+  margin: 0 !important;
+}
+
+.qura-sidebar-footer {
+  padding: 16px 20px !important;
+  background: var(--qura-bg-card) !important;
+  border-top: 1px solid var(--qura-border) !important;
+}
+
+.qura-status {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  color: var(--qura-text-secondary) !important;
+}
+
+.qura-status-dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: var(--qura-success) !important;
+  animation: qura-pulse 2s infinite !important;
+}
+
+.qura-status.paused .qura-status-dot { background: var(--qura-warning) !important; animation: none !important; }
+
+@keyframes qura-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.9); }
+}
+
+.qura-sidebar-content::-webkit-scrollbar { width: 6px !important; }
+.qura-sidebar-content::-webkit-scrollbar-track { background: transparent !important; }
+.qura-sidebar-content::-webkit-scrollbar-thumb { background: var(--qura-bg-input) !important; border-radius: 3px !important; }
+.qura-sidebar-content::-webkit-scrollbar-thumb:hover { background: var(--qura-text-muted) !important; }
