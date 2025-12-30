@@ -919,6 +919,11 @@ body {
   border-color: var(--accent);
 }
 
+.header-btn svg {
+  flex-shrink: 0;
+  overflow: visible;
+}
+
 /* Toggle Switch */
 .toggle-switch {
   position: relative;
