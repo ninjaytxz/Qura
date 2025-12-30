@@ -81,7 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionId: document.getElementById('session-id'),
     sessionName: document.getElementById('session-name'),
     colorPicker: document.getElementById('color-picker'),
-    colorOptions: document.querySelectorAll('.color-option'),
+    colorOptions: document.querySelectorAll('.color-option:not(.custom-color-option)'),
+    customSessionColor: document.getElementById('custom-session-color'),
     websiteAddInput: document.getElementById('website-add-input'),
     addWebsiteModalBtn: document.getElementById('add-website-modal-btn'),
     websitesList: document.getElementById('websites-list'),
@@ -179,6 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     elements.colorOptions.forEach(option => {
       option.addEventListener('click', () => selectColor(option.dataset.color));
+    });
+
+    // Custom color picker
+    elements.customSessionColor.addEventListener('input', (e) => {
+      selectColor(e.target.value);
+      e.target.parentElement.style.background = e.target.value;
     });
 
     elements.addWebsiteModalBtn.addEventListener('click', addWebsiteToTemp);
@@ -497,9 +504,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function selectColor(color) {
     selectedColor = color;
+    const presetColors = Array.from(elements.colorOptions).map(o => o.dataset.color);
+    const isPreset = presetColors.includes(color);
+    
     elements.colorOptions.forEach(option => {
       option.classList.toggle('active', option.dataset.color === color);
     });
+    
+    // Handle custom color option active state
+    const customOption = elements.customSessionColor.parentElement;
+    if (!isPreset) {
+      customOption.classList.add('active');
+      customOption.style.background = color;
+      elements.customSessionColor.value = color;
+    } else {
+      customOption.classList.remove('active');
+      customOption.style.cssText = 'background: linear-gradient(180deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd); background-size: 100% 300%; background-position: center;';
+    }
   }
 
   function addWebsiteToTemp() {
