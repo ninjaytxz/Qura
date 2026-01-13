@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Qura",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A web extension designed to help you focus and block out all annoying websites while working.",
   "permissions": [
     "storage",
@@ -40,7 +40,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["pages/blocked.html", "css/*", "icons/*", "assets/*", "js/blocked.js"],
+      "resources": ["pages/blocked.html", "css/*", "icons/*", "assets/*", "assets/fonts/*", "js/blocked.js"],
       "matches": ["<all_urls>"]
     }
   ]

@@ -1,5 +1,7 @@
 /* Qura - Blocked Page Styles */
 
+
+
 :root {
   --bg-dark: #0d0d0f;
   --bg-card: #16161a;
@@ -10,6 +12,8 @@
   --accent-glow: rgba(196, 167, 231, 0.3);
   --border: rgba(255, 255, 255, 0.08);
   --font-main: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --danger: #F38BA8;
+--radius-sm: 6px;
 }
 
 * {
@@ -84,6 +88,30 @@ h1 {
   margin-bottom: 8px;
 }
 
+
+.strict-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  background: rgba(243, 139, 168, 0.15);
+  border-radius: 6px;
+  color: #F38BA8;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.strict-badge svg {
+  width: 11px;
+  height: 11px;
+  stroke: #F38BA8;
+  fill: none;
+}
+
+
 .timer-display {
   font-size: 48px;
   font-weight: 700;
@@ -140,5 +168,5 @@ h1 {
 .back-btn:hover {
   background: var(--accent);
   border-color: var(--accent);
-  color: #1a1a1e;
+  color: var(--text-on-accent);
 }

@@ -1,3 +1,4 @@
+
 /* Qura - Content Script Styles */
 
 :root {
@@ -14,16 +15,98 @@
   --qura-warning: #F9E2AF;
   --qura-error: #F38BA8;
   --qura-border: rgba(255, 255, 255, 0.08);
-  --qura-font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --qura-font: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --tab-color: #C4A7E7;
 }
 
+/* Pull Tab Style */
+#qura-pull-tab {
+  position: fixed !important;
+  right: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 28px !important;
+  height: 80px !important;
+  border-radius: 8px 0 0 8px !important;
+  background: var(--tab-color, var(--qura-accent)) !important;
+  color: var(--qura-text-on-accent, white) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 2147483646 !important;
+  box-shadow: -3px 0 12px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.2s ease !important;
+  border: none !important;
+  outline: none !important;
+}
+
+#qura-pull-tab:hover {
+  width: 32px !important;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+#qura-pull-tab:active {
+  width: 28px !important;
+}
+
+#qura-pull-tab .pull-tab-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#qura-pull-tab .pull-tab-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+  stroke: white !important;
+  transition: transform 0.2s ease !important;
+}
+
+#qura-pull-tab:hover .pull-tab-icon svg {
+  transform: translateX(-2px) !important;
+}
+
+#qura-pull-tab.preview-mode {
+  opacity: 0.6 !important;
+  background: var(--qura-text-muted) !important;
+}
+
+#qura-pull-tab.preview-mode:hover {
+  opacity: 0.8 !important;
+}
+
+/* Preview Tooltip */
+.qura-preview-tooltip {
+  position: fixed !important;
+  right: 40px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: var(--qura-bg-card) !important;
+  color: var(--qura-text-primary) !important;
+  padding: 10px 14px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-family: var(--qura-font) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  z-index: 2147483647 !important;
+  animation: tooltip-fade 0.2s ease !important;
+  white-space: nowrap !important;
+}
+
+@keyframes tooltip-fade {
+  from { opacity: 0; transform: translateY(-50%) translateX(10px); }
+  to { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+/* Legacy floating button - keep for backwards compatibility */
 #qura-floating-btn {
   position: fixed !important;
   right: 20px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  width: 52px !important;
-  height: 52px !important;
+  width: 56px !important;
+  height: 56px !important;
   border-radius: 50% !important;
   background: linear-gradient(135deg, var(--qura-accent), var(--qura-accent-hover)) !important;
   color: #1a1a1e !important;
@@ -32,18 +115,24 @@
   justify-content: center !important;
   cursor: pointer !important;
   z-index: 2147483646 !important;
-  box-shadow: 0 4px 20px rgba(196, 167, 231, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 4px 24px rgba(196, 167, 231, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  border: none !important;
+  border: 3px solid rgba(255, 255, 255, 0.2) !important;
   outline: none !important;
 }
 
 #qura-floating-btn:hover {
-  transform: translateY(-50%) scale(1.08) !important;
-  box-shadow: 0 6px 28px rgba(196, 167, 231, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-50%) scale(1.1) !important;
 }
 
-#qura-floating-btn:active { transform: translateY(-50%) scale(0.95) !important; }
+#qura-floating-btn .qura-logo-text {
+  font-family: 'Grisha', 'Georgia', serif !important;
+  font-size: 28px !important;
+  font-weight: bold !important;
+  color: white !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  line-height: 1 !important;
+}
 
 #qura-floating-btn svg {
   width: 24px !important;
@@ -74,16 +163,44 @@
   padding: 20px 20px 20px 16px !important;
   background: var(--qura-bg-card) !important;
   display: flex !important;
-  align-items: center !important;
+  align-items: flex-start !important;
   justify-content: space-between !important;
   border-bottom: 1px solid var(--qura-border) !important;
 }
 
-.qura-session-info { display: flex !important; flex-direction: column !important; gap: 4px !important; }
-.qura-session-name { font-size: 16px !important; font-weight: 600 !important; color: var(--qura-text-primary) !important; }
+.qura-session-info { display: flex !important; flex-direction: column !important; gap: 4px !important; flex: 1 !important;}
+.qura-session-name { font-size: 22px !important; font-weight: 700 !important; color: var(--qura-text-primary) !important; }
+
+.qura-strict-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin-top: 6px !important;
+  margin-left: 0px!important;
+  margin-right: 0px !important;
+  padding: 4px 10px !important;
+  background: rgba(243, 139, 168, 0.15) !important;
+  border-radius: 6px !important;
+  color: #F38BA8 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  align-self: flex-start !important;
+  width: fit-content !important;
+}
+
+.qura-strict-badge svg {
+  width: 11px !important;
+  height: 11px !important;
+  stroke: #F38BA8 !important;
+  fill: none !important;
+}
+
+
 
 .qura-timer {
-  font-size: 28px !important;
+  font-size: 24px !important;
   font-weight: 700 !important;
   color: var(--qura-accent) !important;
   font-variant-numeric: tabular-nums !important;
@@ -102,6 +219,7 @@
   align-items: center !important;
   justify-content: center !important;
   transition: all 0.2s ease !important;
+  align-self: flex-start !important;
 }
 
 .qura-close-btn:hover { background: var(--qura-bg-elevated) !important; color: var(--qura-text-primary) !important; }
@@ -130,6 +248,7 @@
   background: var(--qura-bg-input) !important;
   padding: 4px 10px !important;
   border-radius: 12px !important;
+  font-weight: 600 !important; 
 }
 
 .qura-add-task { display: flex !important; gap: 8px !important; margin-bottom: 20px !important; }
@@ -156,7 +275,7 @@
   border: none !important;
   background: var(--qura-accent) !important;
   border-radius: 10px !important;
-  color: #1a1a1e !important;
+  color: var(--qura-text-on-accent, white) !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
@@ -253,8 +372,9 @@
 
 .qura-task-actions { display: flex !important; gap: 4px !important; opacity: 0 !important; transition: opacity 0.2s ease !important; }
 .qura-task-item:hover .qura-task-actions { opacity: 1 !important; }
+.qura-task-item.pinned .qura-pin-btn { opacity: 1 !important; }
 
-.qura-edit-btn, .qura-delete-btn {
+.qura-edit-btn, .qura-delete-btn, .qura-pin-btn {
   width: 28px !important;
   height: 28px !important;
   border: none !important;
@@ -270,6 +390,12 @@
 
 .qura-edit-btn:hover { background: var(--qura-bg-input) !important; color: var(--qura-accent) !important; }
 .qura-delete-btn:hover { background: rgba(243, 139, 168, 0.15) !important; color: var(--qura-error) !important; }
+.qura-pin-btn:hover { background: var(--qura-bg-input) !important; color: var(--qura-accent) !important; }
+.qura-pin-btn.active { color: var(--qura-accent) !important; }
+
+.qura-task-item.pinned {
+  border-left: 3px solid var(--qura-accent) !important;
+}
 
 .qura-no-tasks {
   text-align: center !important;

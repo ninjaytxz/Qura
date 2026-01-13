@@ -13,6 +13,8 @@ let state = {
   elapsedTime: 0,
   startTime: null,
   pausedTime: 0,
+  strictMode: false,
+  strictDuration: null,
   statistics: {
     totalTime: 0,
     sessionTimes: {},
@@ -37,7 +39,8 @@ let state = {
       accentHover: '#B394D9'
     }
   },
-  tasks: {}
+  tasks: {},
+  taskHistory: []
 };
 
 // ============================================
@@ -131,9 +134,11 @@ function isUrlAllowed(url, whitelist) {
   ];
   try {
     const hostname = new URL(url).hostname.toLowerCase();
-    if (alwaysAllowed.some(domain => hostname.includes(domain))) {
-      return true;
-    }
+    if (alwaysAllowed.some(domain => 
+		  hostname === domain || hostname.endsWith('.' + domain)
+		)) {
+		  return true;
+	}
   } catch (e) {}
   if (!url) return true;
   
@@ -141,6 +146,7 @@ function isUrlAllowed(url, whitelist) {
       url.startsWith('chrome-extension://') ||
       url.startsWith('about:') ||
       url.startsWith('edge://') ||
+	  url.startsWith('file:///') ||
       url.startsWith('brave://')) {
     return true;
   }
@@ -151,10 +157,9 @@ function isUrlAllowed(url, whitelist) {
     const whitelistedDomain = extractDomain(whitelistedUrl);
     
     if (domain === whitelistedDomain || 
-        domain.endsWith('.' + whitelistedDomain) ||
-        url.includes(whitelistedUrl)) {
-      return true;
-    }
+    domain.endsWith('.' + whitelistedDomain)) {
+		return true;
+	}	
   }
   
   return false;
@@ -282,8 +287,17 @@ function removeWebsiteFromSession(sessionId, website) {
 // TIMER MANAGEMENT
 // ============================================
 
-function startTimer() {
+function startTimer(strictMode = false, strictDuration = null) {
   if (!state.activeSession) return false;
+  
+   // Validate strict mode duration (prevent negative, zero, or ridiculously long durations)
+	if (strictMode) {
+	  if (typeof strictDuration !== 'number' || strictDuration <= 0 || strictDuration > 86400) {
+		// Return error message instead of just false
+		return { error: 'Invalid duration. Please set between 1 second and 24 hours.' };
+	  }
+	}
+  
   
   if (state.isPaused) {
     state.isPaused = false;
@@ -292,6 +306,8 @@ function startTimer() {
     state.startTime = Date.now();
     state.elapsedTime = 0;
     state.pausedTime = 0;
+    state.strictMode = strictMode;
+    state.strictDuration = strictDuration;
   }
   
   state.isRunning = true;
@@ -299,11 +315,19 @@ function startTimer() {
   
   chrome.alarms.create('quraTimer', { periodInMinutes: 1/60 });
   
+  // Set alarm for strict mode end
+  if (strictMode && strictDuration) {
+    chrome.alarms.create('quraStrictEnd', { delayInMinutes: strictDuration / 60 });
+  }
+  
   broadcastState();
   return true;
 }
 
 function pauseTimer() {
+  // Cannot pause in strict mode
+  if (state.strictMode) return false;
+  
   if (!state.isRunning) return false;
   
   const now = Date.now();
@@ -343,13 +367,40 @@ function endTimer() {
   state.statistics.dailyStats[today].time += state.elapsedTime;
   state.statistics.dailyStats[today].sessions += 1;
   
+  
+  const sessionTasks = state.tasks[sessionId] || [];
+  const completedTasks = sessionTasks.filter(t => t.completed);
+  
+  if (completedTasks.length > 0) {
+    if (!state.taskHistory) state.taskHistory = [];
+    completedTasks.forEach(task => {
+      state.taskHistory.unshift({
+        ...task,
+        sessionId: sessionId,
+        sessionName: state.activeSession.name,
+        completedAt: Date.now()
+      });
+    });
+    // Keep ALL tasks - no limit
+  }
+  
+  // Clear non-pinned tasks (pinned tasks stay with pinned: true)
+  // Reset completion state of pinned tasks so they can be re-completed
+  state.tasks[sessionId] = sessionTasks.filter(t => t.pinned).map(t => ({
+    ...t,
+    completed: false
+  }));
+  
   state.isRunning = false;
   state.isPaused = false;
   state.elapsedTime = 0;
   state.startTime = null;
   state.pausedTime = 0;
+  state.strictMode = false;
+  state.strictDuration = null;
   
   chrome.alarms.clear('quraTimer');
+  chrome.alarms.clear('quraStrictEnd');
   saveState();
   broadcastState();
   
@@ -376,6 +427,7 @@ function addTask(sessionId, taskText) {
     id: generateId(),
     text: taskText,
     completed: false,
+    pinned: false,
     createdAt: Date.now()
   };
   
@@ -454,7 +506,10 @@ function broadcastState() {
     elapsedTime: getCurrentElapsedTime(),
     statistics: state.statistics,
     settings: state.settings,
-    tasks: state.tasks
+    tasks: state.tasks,
+    strictMode: state.strictMode,
+    strictDuration: state.strictDuration,
+    taskHistory: state.taskHistory || []
   };
   
   chrome.tabs.query({}, (tabs) => {
@@ -478,7 +533,21 @@ function broadcastState() {
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'quraTimer') {
+    // Check if strict mode time is up
+    if (state.strictMode && state.strictDuration && state.isRunning) {
+      const currentElapsed = getCurrentElapsedTime();
+      if (currentElapsed >= state.strictDuration * 1000) {
+        endTimer();
+        return;
+      }
+    }
     broadcastState();
+  }
+  
+  if (alarm.name === 'quraStrictEnd') {
+    if (state.isRunning && state.strictMode) {
+      endTimer();
+    }
   }
 });
 
@@ -502,7 +571,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             elapsedTime: getCurrentElapsedTime(),
             statistics: state.statistics,
             settings: state.settings,
-            tasks: state.tasks
+            tasks: state.tasks,
+            strictMode: state.strictMode,
+            strictDuration: state.strictDuration,
+            taskHistory: state.taskHistory || []
           }
         });
         break;
@@ -551,9 +623,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         break;
         
       case 'START_TIMER':
-        const started = startTimer();
-        sendResponse({ success: started });
-        break;
+	  const started = startTimer(message.strictMode, message.strictDuration);
+	  if (started && started.error) {
+		sendResponse({ success: false, error: started.error });
+	  } else {
+		sendResponse({ success: started });
+	  }
+	  break;
         
       case 'PAUSE_TIMER':
         const paused = pauseTimer();
@@ -650,9 +726,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             statistics: state.statistics,
             tasks: state.tasks,
             settings: state.settings,
+            taskHistory: state.taskHistory || [],
             exportedAt: Date.now()
           }
         });
+        break;
+        
+      case 'CLEAR_TASK_HISTORY':
+        state.taskHistory = [];
+        await saveState();
+        sendResponse({ success: true });
+        broadcastState();
         break;
         
       case 'RESET_DATA':        

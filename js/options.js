@@ -1,6 +1,12 @@
 // Qura - Options Page Script
 // Handles sessions management, statistics display, settings, and theme customization
 
+// Truncate long text with dots
+function truncateText(text, maxLength = 16) {
+  if (!text) return '';
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Theme presets
   const themePresets = {
@@ -44,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let tempWebsites = [];
   let selectedColor = '#C4A7E7';
   let confirmCallback = null;
+  let sortOrder = 'desc'; // 'desc' or 'asc'
 
   const elements = {
     navTabs: document.querySelectorAll('.nav-tab'),
@@ -97,7 +104,18 @@ document.addEventListener('DOMContentLoaded', () => {
     howItWorksModal: document.getElementById('how-it-works-modal'),
     howItWorksClose: document.getElementById('how-it-works-close'),
     howItWorksGotIt: document.getElementById('how-it-works-got-it'),
-    kofiButton: document.getElementById('kofi-button')
+    kofiButton: document.getElementById('kofi-button'),
+    taskHistoryList: document.getElementById('task-history-list'),
+    taskHistorySearch: document.getElementById('task-history-search'),
+    clearHistoryBtn: document.getElementById('clear-history-btn'),
+    taskSortBy: document.getElementById('task-sort-by'),
+    sortOrderBtn: document.getElementById('sort-order-btn'),
+    taskFilterSession: document.getElementById('task-filter-session'),
+    dateRangeCheckbox: document.getElementById('date-range-checkbox'),
+    enableDateRange: document.getElementById('enable-date-range'),
+    dateRangeFilter: document.getElementById('date-range-filter'),
+    dateFrom: document.getElementById('date-from'),
+    dateTo: document.getElementById('date-to')
   };
 
   function init() {
@@ -120,6 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (state.settings && state.settings.customTheme) {
       const theme = state.settings.customTheme;
       const root = document.documentElement;
+
+      // Calculate Smart Contrast Colors
+      const textOnAccent = getContrastColor(theme.accent);
+      const textOnBg = getContrastColor(theme.bgCard);
+
+      // Apply Standard Variables
       root.style.setProperty('--bg-dark', theme.bgDark);
       root.style.setProperty('--bg-card', theme.bgCard);
       root.style.setProperty('--bg-elevated', theme.bgElevated);
@@ -131,6 +155,21 @@ document.addEventListener('DOMContentLoaded', () => {
       root.style.setProperty('--accent-hover', theme.accentHover);
       root.style.setProperty('--accent-glow', `${theme.accent}4D`);
       root.style.setProperty('--accent-light', `${theme.accent}26`);
+
+      // Apply Smart Contrast Variables
+      // --text-on-accent: Used for buttons like "New Session"
+      root.style.setProperty('--text-on-accent', textOnAccent);
+      
+      // --smart-text: Overrides primary text if contrast is too low
+      // We check if the user's chosen text color matches the contrast requirement. 
+      // If not, we force the high-contrast version.
+      const userTextColorLum = getLuminance(...Object.values(hexToRgb(theme.textPrimary)));
+      const bgLum = getLuminance(...Object.values(hexToRgb(theme.bgCard)));
+      
+      // If contrast is bad (difference < 0.3), force high contrast
+      if (Math.abs(userTextColorLum - bgLum) < 0.3) {
+         root.style.setProperty('--text-primary', textOnBg);
+      }
     }
   }
 
@@ -268,6 +307,93 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === elements.confirmModal) closeConfirmModal();
     });
 
+    // Task history search
+    if (elements.taskHistorySearch) {
+      elements.taskHistorySearch.addEventListener('input', (e) => {
+        renderTaskHistory(e.target.value);
+      });
+    }
+
+    // Task sorting
+    if (elements.taskSortBy) {
+      elements.taskSortBy.addEventListener('change', (e) => {
+        const sortBy = e.target.value;
+        
+        // Clear/disable previous method filters
+        if (sortBy === 'session') {
+          elements.taskFilterSession.style.display = 'block';
+          elements.dateRangeCheckbox.style.display = 'none';
+          elements.dateRangeFilter.style.display = 'none';
+          if (elements.enableDateRange) elements.enableDateRange.checked = false;
+          populateSessionFilter();
+        } else if (sortBy === 'date') {
+          elements.taskFilterSession.style.display = 'none';
+          elements.dateRangeCheckbox.style.display = 'flex';
+          // Only show date range if checkbox is checked
+          if (elements.enableDateRange && elements.enableDateRange.checked) {
+            elements.dateRangeFilter.style.display = 'flex';
+          }
+        } else if (sortBy === 'name') {
+          elements.taskFilterSession.style.display = 'none';
+          elements.dateRangeCheckbox.style.display = 'none';
+          elements.dateRangeFilter.style.display = 'none';
+          if (elements.enableDateRange) elements.enableDateRange.checked = false;
+        }
+        
+        renderTaskHistory();
+      });
+    }
+
+    // Sort order toggle button
+    if (elements.sortOrderBtn) {
+      elements.sortOrderBtn.addEventListener('click', () => {
+        sortOrder = sortOrder === 'desc' ? 'asc' : 'desc';
+        updateSortOrderButton();
+        renderTaskHistory();
+      });
+    }
+
+    // Date range checkbox
+    if (elements.enableDateRange) {
+      elements.enableDateRange.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          elements.dateRangeFilter.style.display = 'flex';
+        } else {
+          elements.dateRangeFilter.style.display = 'none';
+          // Clear date inputs
+          if (elements.dateFrom) elements.dateFrom.value = '';
+          if (elements.dateTo) elements.dateTo.value = '';
+        }
+        renderTaskHistory();
+      });
+    }
+
+    // Session filter
+    if (elements.taskFilterSession) {
+      elements.taskFilterSession.addEventListener('change', () => {
+        renderTaskHistory();
+      });
+    }
+
+    // Date range filters
+    if (elements.dateFrom) {
+      elements.dateFrom.addEventListener('change', () => {
+        renderTaskHistory();
+      });
+    }
+    if (elements.dateTo) {
+      elements.dateTo.addEventListener('change', () => {
+        renderTaskHistory();
+      });
+    }
+
+    // Clear history button
+    if (elements.clearHistoryBtn) {
+      elements.clearHistoryBtn.addEventListener('click', () => {
+        showConfirm('Clear Task History', 'Are you sure you want to clear all task history? This cannot be undone.', clearTaskHistory);
+      });
+    }
+
     chrome.runtime.onMessage.addListener((message) => {
       if (message.type === 'STATE_UPDATE') {
         state = message.state;
@@ -287,6 +413,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sectionName === 'statistics') {
       renderStatistics();
     }
+    if (sectionName === 'tasks') {
+      updateSortOrderButton();
+      renderTaskHistory();
+    }
   }
 
   function renderAll() {
@@ -295,6 +425,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsSection = document.getElementById('statistics-section');
     if (statsSection && statsSection.classList.contains('active')) {
       renderStatistics();
+    }
+    // Render tasks if visible
+    const tasksSection = document.getElementById('tasks-section');
+    if (tasksSection && tasksSection.classList.contains('active')) {
+      updateSortOrderButton();
+      renderTaskHistory();
     }
   }
 
@@ -314,9 +450,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const moreCount = session.websites.length - 3;
 
       return `
-        <div class="session-card" style="--session-color: ${session.color}">
+       <div class="session-card ${state.activeSession?.id === session.id && state.isRunning ? 'active-session' : ''}" style="--session-color: ${session.color}">
+          ${state.activeSession?.id === session.id && state.isRunning ? '<div class="active-badge"><span class="active-dot"></span>ACTIVE</div>' : ''}
           <div class="session-card-header">
-            <span class="session-name">${escapeHtml(session.name)}</span>
+            <span class="session-name" title="${escapeHtml(session.name)}">${truncateText(escapeHtml(session.name), 16)}</span>
             <div class="session-actions">
               <button class="session-action-btn duplicate" data-id="${session.id}" title="Duplicate">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -341,12 +478,20 @@ document.addEventListener('DOMContentLoaded', () => {
 		  
 		  <div class="session-stats">
             <div class="session-stat">
+              <svg class="session-stat-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12,6 12,12 16,14"/>
+              </svg>
               <span class="session-stat-value">${formatTimeShort(totalTime)}</span>
               <span class="session-stat-label">Total Time</span>
             </div>
             <div class="session-stat">
+              <svg class="session-stat-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
               <span class="session-stat-value">${completedTasks}/${tasks.length}</span>
-              <span class="session-stat-label">Tasks</span>
+              <span class="session-stat-label">Tasks Done</span>
             </div>
           </div>
 		  
@@ -415,12 +560,150 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="breakdown-item">
           <div class="breakdown-color" style="background: ${session.color}"></div>
           <div class="breakdown-info">
-            <div class="breakdown-name">${escapeHtml(session.name)}</div>
+            <div class="breakdown-name">${truncateText(escapeHtml(session.name), 16)}</div>
             <div class="breakdown-bar">
               <div class="breakdown-bar-fill" style="width: ${percentage}%; background: ${session.color}"></div>
             </div>
           </div>
           <div class="breakdown-time">${formatTimeShort(time)}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function populateSessionFilter() {
+    if (!elements.taskFilterSession) return;
+    
+    const taskHistory = state.taskHistory || [];
+    const uniqueSessions = [...new Set(taskHistory.map(task => task.sessionName).filter(Boolean))];
+    
+    elements.taskFilterSession.innerHTML = '<option value="all">All Sessions</option>' +
+      uniqueSessions.map(sessionName => 
+        `<option value="${escapeHtml(sessionName)}" title="${escapeHtml(sessionName)}">${truncateText(escapeHtml(sessionName), 16)}</option>`
+      ).join('');
+  }
+
+  function updateSortOrderButton() {
+    if (!elements.sortOrderBtn) return;
+    
+    const svg = elements.sortOrderBtn.querySelector('svg');
+    if (sortOrder === 'desc') {
+      // Descending icon (down arrow on top)
+      svg.innerHTML = `
+        <path d="m3 16 4 4 4-4"/>
+        <path d="M7 20V4"/>
+        <path d="m21 8-4-4-4 4"/>
+        <path d="M17 4v16"/>
+      `;
+      elements.sortOrderBtn.title = 'Sort: Newest/Z-A';
+    } else {
+      // Ascending icon (up arrow on top)
+      svg.innerHTML = `
+        <path d="m3 8 4-4 4 4"/>
+        <path d="M7 4v16"/>
+        <path d="m21 16-4 4-4-4"/>
+        <path d="M17 20V4"/>
+      `;
+      elements.sortOrderBtn.title = 'Sort: Oldest/A-Z';
+    }
+  }
+
+  function renderTaskHistory(searchQuery = '') {
+    if (!elements.taskHistoryList) return;
+    
+    const taskHistory = state.taskHistory || [];
+    
+    if (taskHistory.length === 0) {
+      elements.taskHistoryList.innerHTML = '<p class="empty-history">No completed tasks yet</p>';
+      return;
+    }
+    
+    let filteredTasks = [...taskHistory];
+    
+    // Apply search filter - search ALL tasks when searching
+    if (searchQuery) {
+      filteredTasks = filteredTasks.filter(task => 
+        task.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (task.sessionName && task.sessionName.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    }
+    
+    // Apply session filter
+    const sessionFilter = elements.taskFilterSession?.value;
+    if (sessionFilter && sessionFilter !== 'all') {
+      filteredTasks = filteredTasks.filter(task => task.sessionName === sessionFilter);
+    }
+    
+    // Apply date range filter (only if checkbox is checked)
+    const dateRangeEnabled = elements.enableDateRange?.checked;
+    if (dateRangeEnabled) {
+      const dateFrom = elements.dateFrom?.value;
+      const dateTo = elements.dateTo?.value;
+      if (dateFrom || dateTo) {
+        filteredTasks = filteredTasks.filter(task => {
+          const taskDate = new Date(task.completedAt).toISOString().split('T')[0];
+          const fromMatch = !dateFrom || taskDate >= dateFrom;
+          const toMatch = !dateTo || taskDate <= dateTo;
+          return fromMatch && toMatch;
+        });
+      }
+    }
+    
+    // Apply sorting
+    const sortBy = elements.taskSortBy?.value || 'date';
+    switch (sortBy) {
+      case 'name':
+        filteredTasks.sort((a, b) => {
+          const comparison = a.text.localeCompare(b.text);
+          return sortOrder === 'asc' ? comparison : -comparison;
+        });
+        break;
+      case 'session':
+        filteredTasks.sort((a, b) => {
+          const sessionA = a.sessionName || '';
+          const sessionB = b.sessionName || '';
+          const comparison = sessionA.localeCompare(sessionB);
+          return sortOrder === 'asc' ? comparison : -comparison;
+        });
+        break;
+      case 'date':
+      default:
+        // Sort by date
+        filteredTasks.sort((a, b) => {
+          const comparison = a.completedAt - b.completedAt;
+          return sortOrder === 'asc' ? comparison : -comparison;
+        });
+        break;
+    }
+    
+    if (filteredTasks.length === 0) {
+      elements.taskHistoryList.innerHTML = '<p class="empty-history">No tasks matching your search</p>';
+      return;
+    }
+    
+    // Show only top 50 UNLESS user is searching (then show all matching results)
+    const tasksToDisplay = searchQuery ? filteredTasks : filteredTasks.slice(0, 50);
+    
+    elements.taskHistoryList.innerHTML = tasksToDisplay.map(task => {
+      const completedDate = new Date(task.completedAt);
+      const dateStr = completedDate.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      
+      return `
+        <div class="task-history-item">
+          <div class="task-history-check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20,6 9,17 4,12"/>
+            </svg>
+          </div>
+          <div class="task-history-info">
+            <div class="task-history-text">${escapeHtml(task.text)}</div>
+            <div class="task-history-meta">${escapeHtml(task.sessionName || 'Session')} • ${dateStr}</div>
+          </div>
         </div>
       `;
     }).join('');
@@ -471,6 +754,15 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     }).join('');
+  }
+
+  function clearTaskHistory() {
+    chrome.runtime.sendMessage({ type: 'CLEAR_TASK_HISTORY' }, (response) => {
+      if (response && response.success) {
+        showToast('Task history cleared', 'success');
+        renderTaskHistory();
+      }
+    });
   }
 
   function openModal(session = null) {
@@ -526,7 +818,21 @@ document.addEventListener('DOMContentLoaded', () => {
   function addWebsiteToTemp() {
     const website = elements.websiteAddInput.value.trim();
     if (!website) return;
-    const cleanUrl = website.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/.*$/, '');
+    const cleanUrl = website.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/.*$/, '').toLowerCase();
+	
+	// Validate website format - must contain a TLD (.com, .org, .net, etc)
+  const tldRegex = /\.[a-z]{2,}$/i;
+  if (!tldRegex.test(cleanUrl)) {
+    showToast('Invalid website format. Please include a domain extension (e.g., .com, .org, .net)', 'error');
+    return;
+  }
+  
+  // Additional validation - must have at least one dot and no spaces
+  if (!cleanUrl.includes('.') || cleanUrl.includes(' ')) {
+    showToast('Invalid website format. Example: github.com or docs.google.com', 'error');
+    return;
+  }
+	
     if (!tempWebsites.includes(cleanUrl)) {
       tempWebsites.push(cleanUrl);
       renderTempWebsites();
@@ -787,6 +1093,43 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => toast.remove(), 300);
     }, 3000);
   }
+
+// --- Contrast Helper Functions ---
+
+// 1. Convert Hex to RGB
+function hexToRgb(hex) {
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
+
+// 2. Calculate Luminance (Perceived Brightness)
+function getLuminance(r, g, b) {
+  const a = [r, g, b].map(function (v) {
+    v /= 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+}
+
+// 3. Get Best Contrast Color (Returns Black or White)
+function getContrastColor(hexColor) {
+  const rgb = hexToRgb(hexColor);
+  if (!rgb) return '#ffffff'; // Default to white if invalid
+  
+  const luminance = getLuminance(rgb.r, rgb.g, rgb.b);
+  
+  // If background is bright (lum > 0.5), use dark text. Otherwise white.
+  return luminance > 0.5 ? '#0d0d0f' : '#ffffff';
+}
+
 
   init();
 });

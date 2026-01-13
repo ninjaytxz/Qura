@@ -28,6 +28,13 @@
     <div class="timer-section">
       <div class="timer-display" id="timer-display">00:00</div>
       <div class="timer-status" id="timer-status">Select a session to begin</div>
+      <div class="strict-mode-badge" id="strict-mode-badge" style="display: none;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span>Strict Mode</span>
+      </div>
     </div>
 
     <!-- Session Selector -->
@@ -38,6 +45,63 @@
           <option value="">-- Select Session --</option>
         </select>
         <div class="session-indicator" id="session-indicator"></div>
+      </div>
+    </div>
+
+    <!-- Strict Mode -->
+    <div class="strict-mode-section" id="strict-mode-section">
+      <div class="strict-mode-header">
+        <div class="header-label-group">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lock-icon">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <label class="section-label">Strict Mode</label>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="strict-mode-toggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      
+      <div class="strict-mode-timer" id="strict-mode-timer" style="display: none;">
+        <div class="time-inputs">
+          
+          <div class="time-input-group" data-tooltip="Hours">
+            <input type="number" id="strict-hours" min="0" max="23" value="0" placeholder="0">
+            <div class="custom-spinners">
+              <button class="spinner-btn up" data-target="strict-hours">▲</button>
+              <button class="spinner-btn down" data-target="strict-hours">▼</button>
+            </div>
+            <span class="unit-label">h</span>
+          </div>
+
+          <div class="time-input-group" data-tooltip="Minutes">
+            <input type="number" id="strict-minutes" min="0" max="59" value="25" placeholder="25">
+            <div class="custom-spinners">
+              <button class="spinner-btn up" data-target="strict-minutes">▲</button>
+              <button class="spinner-btn down" data-target="strict-minutes">▼</button>
+            </div>
+            <span class="unit-label">m</span>
+          </div>
+
+          <div class="time-input-group" data-tooltip="Seconds">
+            <input type="number" id="strict-seconds" min="0" max="59" value="0" placeholder="0">
+            <div class="custom-spinners">
+              <button class="spinner-btn up" data-target="strict-seconds">▲</button>
+              <button class="spinner-btn down" data-target="strict-seconds">▼</button>
+            </div>
+            <span class="unit-label">s</span>
+          </div>
+          
+        </div>
+
+        <div class="quick-presets">
+          <button class="preset-btn" data-time="900">15m</button>
+          <button class="preset-btn active" data-time="1500">25m</button>
+          <button class="preset-btn" data-time="2700">45m</button>
+          <button class="preset-btn" data-time="3600">1h</button>
+        </div>
       </div>
     </div>
 
@@ -82,19 +146,45 @@
     <!-- Footer Stats -->
     <footer class="popup-footer">
       <div class="stat-item">
-        <span class="stat-value" id="total-time">0h 0m</span>
-        <span class="stat-label">Total Focus</span>
+        <span class="stat-value" id="total-time">0m</span>
+        <span class="stat-label">Session Time</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
         <span class="stat-value" id="tasks-done">0</span>
-        <span class="stat-label">Tasks Done</span>
+        <span class="stat-label">Tasks</span>
       </div>
     </footer>
   </div>
 
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
+
+  <!-- Strict Mode Warning Modal -->
+  <div class="strict-warning-modal" id="strict-warning-modal">
+    <div class="strict-warning-content">
+      <div class="strict-warning-header">
+        <svg width="24" height="24" viewBox="0 0 640 640" fill="currentColor">
+          <path d="M320 64C334.7 64 348.2 72.1 355.2 85L571.2 485C577.9 497.4 577.6 512.4 570.4 524.5C563.2 536.6 550.1 544 536 544L104 544C89.9 544 76.8 536.6 69.6 524.5C62.4 512.4 62.1 497.4 68.8 485L284.8 85C291.8 72.1 305.3 64 320 64zM320 416C302.3 416 288 430.3 288 448C288 465.7 302.3 480 320 480C337.7 480 352 465.7 352 448C352 430.3 337.7 416 320 416zM320 224C301.8 224 287.3 239.5 288.6 257.7L296 361.7C296.9 374.2 307.4 384 319.9 384C332.5 384 342.9 374.3 343.8 361.7L351.2 257.7C352.5 239.5 338.1 224 319.8 224z"/>
+        </svg>
+        <h3>Strict Mode Warning</h3>
+      </div>
+      <p class="strict-warning-message">
+        You are in strict mode. The timer <strong>cannot be stopped or paused</strong> and the timer duration <strong>cannot be edited</strong> until the timer runs out.
+      </p>
+      <p class="strict-warning-question">Are you sure you want to continue?</p>
+      <div class="strict-warning-checkbox">
+        <label>
+          <input type="checkbox" id="disable-strict-warning">
+          <span>Don't show this warning again</span>
+        </label>
+      </div>
+      <div class="strict-warning-actions">
+        <button class="strict-warning-btn cancel" id="strict-warning-cancel">Cancel</button>
+        <button class="strict-warning-btn continue" id="strict-warning-continue">Continue</button>
+      </div>
+    </div>
+  </div>
 
   <script src="../js/popup.js"></script>
 </body>

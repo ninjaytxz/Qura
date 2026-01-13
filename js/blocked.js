@@ -39,11 +39,19 @@
 
     // Back button
     const backBtn = document.getElementById('back-btn');
-    if (backBtn) {
-      backBtn.addEventListener('click', function() {
-        history.back();
-      });
-    }
+if (backBtn) {
+  backBtn.addEventListener('click', function() {
+    // Go back 2 steps to skip the blocked page
+    history.go(-2);
+    
+    // If still on blocked page after 500ms, go back more
+    setTimeout(function() {
+      if (window.location.href.includes('blocked.html')) {
+        history.go(-2);
+      }
+    }, 500);
+  });
+}
 
     // Get state and apply theme
     chrome.runtime.sendMessage({ type: 'GET_STATE' }, function(response) {
@@ -61,15 +69,30 @@
     if (settings && settings.customTheme) {
       const theme = settings.customTheme;
       const root = document.documentElement;
+      
+      // Smart Contrast
+      const textOnAccent = getContrastColor(theme.accent);
+      const textOnBg = getContrastColor(theme.bgCard);
+
       root.style.setProperty('--bg-dark', theme.bgDark);
       root.style.setProperty('--bg-card', theme.bgCard);
       root.style.setProperty('--text-primary', theme.textPrimary);
       root.style.setProperty('--text-secondary', theme.textSecondary);
       root.style.setProperty('--text-muted', theme.textMuted);
       root.style.setProperty('--accent', theme.accent);
-      root.style.setProperty('--accent-glow', theme.accent + '4D');
+      root.style.setProperty('--accent-glow', `${theme.accent}4D`);
+      
+      root.style.setProperty('--text-on-accent', textOnAccent);
+      
+      // Check main text contrast
+      const userTextColorLum = getLuminance(...Object.values(hexToRgb(theme.textPrimary)));
+      const bgLum = getLuminance(...Object.values(hexToRgb(theme.bgDark))); // Blocked page uses bgDark mostly
+      
+      if (Math.abs(userTextColorLum - bgLum) < 0.3) {
+         root.style.setProperty('--text-primary', textOnBg);
+      }
     }
-
+    
     // Apply custom blocked message (use custom if set, otherwise keep default)
     const messageEl = document.getElementById('custom-message');
     if (messageEl && settings && settings.blockedMessage && settings.blockedMessage.trim() !== '') {
@@ -79,29 +102,51 @@
   }
 
   function updateDisplay(state) {
-    if (state.activeSession) {
-      const sessionNameEl = document.getElementById('session-name');
-      if (sessionNameEl) {
-        sessionNameEl.textContent = state.activeSession.name;
-      }
+  if (state.activeSession) {
+    const sessionNameEl = document.getElementById('session-name');
+    if (sessionNameEl) {
+      sessionNameEl.textContent = state.activeSession.name;
     }
+  }
+  
+  // Show/hide strict mode badge
+  const strictBadge = document.getElementById('strict-badge');
+  if (strictBadge) {
+    if (state.strictMode && state.isRunning) {
+      strictBadge.style.display = 'inline-flex';
+    } else {
+      strictBadge.style.display = 'none';
+    }
+  }
 
-    const timerEl = document.getElementById('timer');
-    if (timerEl) {
+  const timerEl = document.getElementById('timer');
+  if (timerEl) {
+    // Show countdown in strict mode, elapsed time otherwise
+    if (state.strictMode && state.strictDuration) {
+      const remainingMs = Math.max(0, (state.strictDuration * 1000) - state.elapsedTime);
+      timerEl.textContent = formatTime(remainingMs);
+    } else {
       timerEl.textContent = formatTime(state.elapsedTime);
     }
   }
+}
 
   function updateTimer() {
-    chrome.runtime.sendMessage({ type: 'GET_STATE' }, function(response) {
-      if (response && response.success && response.state.isRunning) {
-        const timerEl = document.getElementById('timer');
-        if (timerEl) {
+  chrome.runtime.sendMessage({ type: 'GET_STATE' }, function(response) {
+    if (response && response.success && response.state.isRunning) {
+      const timerEl = document.getElementById('timer');
+      if (timerEl) {
+        // Show countdown in strict mode, elapsed time otherwise
+        if (response.state.strictMode && response.state.strictDuration) {
+          const remainingMs = Math.max(0, (response.state.strictDuration * 1000) - response.state.elapsedTime);
+          timerEl.textContent = formatTime(remainingMs);
+        } else {
           timerEl.textContent = formatTime(response.state.elapsedTime);
         }
       }
-    });
-  }
+    }
+  });
+}
 
   function formatTime(ms) {
     const totalSeconds = Math.floor(ms / 1000);
@@ -117,6 +162,28 @@
 
   function pad(num) {
     return num.toString().padStart(2, '0');
+  }
+
+  // Contrast Helpers
+  function hexToRgb(hex) {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
+  }
+
+  function getLuminance(r, g, b) {
+    const a = [r, g, b].map(function (v) {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+  }
+
+  function getContrastColor(hexColor) {
+    const rgb = hexToRgb(hexColor);
+    if (!rgb) return '#ffffff';
+    return getLuminance(rgb.r, rgb.g, rgb.b) > 0.5 ? '#0d0d0f' : '#ffffff';
   }
 
   // Initialize when DOM is ready

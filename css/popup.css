@@ -58,6 +58,7 @@ body {
   width: 320px;
   min-height: 480px;
   overflow: hidden;
+
 }
 
 .popup-container {
@@ -150,14 +151,15 @@ body {
 }
 
 .timer-status {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px; 
+  height: 20px;
+  max-width: 100%;
+  padding: 0 12px;
 }
+
 
 .timer-status::before {
   content: '';
@@ -167,9 +169,43 @@ body {
   background: var(--text-muted);
 }
 
-.timer-status.running::before {
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--text-muted);
+  transition: all 0.3s ease;
+}
+
+.status-dot.running {
   background: var(--success);
-  animation: pulse 2s infinite;
+  animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+.status-dot.paused {
+  background: var(--warning);
+  transform: scale(1);
+  box-shadow: none;
+}
+
+.status-dot.ready {
+  background: var(--text-muted);
+}
+
+
+.status-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; 
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.timer-status::before {
+  display: none !important;
+  content: none !important;
 }
 
 .timer-status.paused::before {
@@ -177,8 +213,17 @@ body {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(0.8); }
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+    box-shadow: 0 0 0 0 rgba(166, 227, 161, 0);
+  }
+  
+  100% {
+    transform: scale(1.2);
+    opacity: 1;
+    box-shadow: 0 0 10px 3px rgba(166, 227, 161, 0.3);
+  }
 }
 
 /* ============================================
@@ -202,6 +247,8 @@ body {
   position: relative;
   display: flex;
   align-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-md);
 }
 
 .session-selector select {
@@ -285,7 +332,7 @@ body {
 
 .control-btn.primary {
   background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-  color: #1a1a1e;
+  color: var(--text-on-accent);
   box-shadow: 0 4px 12px var(--accent-glow);
 }
 
@@ -365,7 +412,7 @@ body {
   border: none;
   background: var(--accent);
   border-radius: var(--radius-md);
-  color: #1a1a1e;
+  color: var(--text-on-accent);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -515,4 +562,430 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* ============================================
+   STRICT MODE (UPDATED)
+   ============================================ */
+/* Removed border-bottom as requested */
+.strict-mode-section {
+  padding: 12px 16px;
+  border-bottom: none; 
+}
+
+.strict-mode-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* New: Header Label Group with Icon */
+.header-label-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lock-icon {
+  color: var(--text-muted);
+  margin-bottom: 6px; /* Align with text baseline */
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--bg-input);
+  border-radius: 22px;
+  transition: 0.3s;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: var(--accent);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  background: white;
+  transform: translateX(18px);
+}
+
+.strict-mode-timer {
+  margin-top: 12px;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Time Inputs Container */
+.time-inputs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+/* ============================================
+   TIME INPUT GROUP & SPINNERS (UPDATED)
+   ============================================ */
+
+/* Hide Native Spinners */
+.time-input-group input[type=number]::-webkit-inner-spin-button, 
+.time-input-group input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+/* Group Container */
+.time-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding-right: 8px;
+  transition: border-color 0.2s;
+  flex: 1;
+  gap: 0;
+}
+
+.time-input-group:hover,
+.time-input-group:focus-within {
+  border-color: var(--accent);
+}
+
+/* Input Styling */
+.time-input-group input {
+  width: 100%;
+  padding: 8px 0 8px 10px;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+/* Unit Label styling */
+.unit-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-left: 4px;
+  user-select: none;
+}
+
+/* Custom Spinners Container */
+.custom-spinners {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.time-input-group:hover .custom-spinners,
+.time-input-group:focus-within .custom-spinners {
+  opacity: 1;
+}
+
+/* Spinner Buttons (Up/Down) */
+.spinner-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 8px;
+  line-height: 8px;
+  cursor: pointer;
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner-btn:hover {
+  color: var(--accent);
+  background: var(--bg-elevated);
+  border-radius: 2px;
+}
+
+/* ============================================
+   CSS TOOLTIPS FOR TIME INPUTS
+   ============================================ */
+.time-input-group[data-tooltip] {
+  position: relative;
+}
+
+.time-input-group[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 110%; /* Show above input */
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  color: var(--accent);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  z-index: 10;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Quick Presets */
+.quick-presets {
+  display: flex;
+  gap: 6px;
+}
+
+.preset-btn {
+  flex: 1;
+  padding: 6px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-main);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preset-btn:hover {
+  background: var(--bg-elevated);
+}
+
+.preset-btn.active {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.strict-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  background: rgba(243, 139, 168, 0.15);
+  border-radius: var(--radius-sm);
+  color: var(--danger);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.strict-mode-badge svg {
+  stroke: var(--danger);
+}
+
+.control-btn.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.control-btn.locked:hover {
+  transform: none;
+}
+
+/* ============================================
+   STRICT MODE WARNING MODAL
+   ============================================ */
+.strict-warning-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.strict-warning-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.3s ease;
+}
+
+.strict-warning-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.strict-warning-header svg {
+  color: var(--warning);
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.strict-warning-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.strict-warning-message {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.strict-warning-message strong {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.strict-warning-question {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.strict-warning-checkbox {
+  margin-bottom: 20px;
+}
+
+.strict-warning-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.strict-warning-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.strict-warning-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.strict-warning-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.strict-warning-btn.cancel {
+  background: var(--bg-input);
+  color: var(--text-secondary);
+}
+
+.strict-warning-btn.cancel:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.strict-warning-btn.continue {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.strict-warning-btn.continue:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Disable hover effects when strict mode container is disabled */
+.strict-mode-container.disabled * {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}
+
+.strict-mode-container.disabled .preset-btn:hover,
+.strict-mode-container.disabled .time-input:hover,
+.strict-mode-container.disabled .spinner-btn:hover {
+  background-color: inherit !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.strict-mode-container.disabled .toggle-label:hover {
+  background-color: inherit !important;
 }
