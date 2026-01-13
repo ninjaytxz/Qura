@@ -4,15 +4,63 @@
   <img width="568" height="183" alt="qura logo" src="https://github.com/user-attachments/assets/60a851ca-3750-4907-b476-67b8f7bcee08" />
 </p>
 
-
 <p align="center">
   <strong>A powerful focus mode extension that helps you stay productive.</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/ninjaytxz/Qura">GitHub</a> •
-  <a href="https://ko-fi.com/ninjaytxz">Support</a>
+  <a href="https://chromewebstore.google.com/detail/gaigelpmhikgidjpadegjbenfgaapiml">
+    <img src="https://img.shields.io/chrome-web-store/v/gaigelpmhikgidjpadegjbenfgaapiml?label=Chrome%20Web%20Store&color=4285f4&logo=googlechrome&logoColor=white" alt="Chrome Web Store">
+  </a>
+  <a href="https://github.com/ninjaytxz/Qura/releases">
+    <img src="https://img.shields.io/github/v/release/ninjaytxz/Qura?color=C4A7E7" alt="GitHub Release">
+  </a>
+  <a href="https://github.com/ninjaytxz/Qura/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+  </a>
 </p>
+
+<p align="center">
+  <img width="2560" height="1600" alt="image1" src="https://github.com/user-attachments/assets/3c5ba6be-db84-4c0c-b62d-56d257079b27" />
+
+</p>
+
+---
+
+## ✨ What's New in v1.1.0
+
+### 🔒 Strict Mode Timer
+Lock yourself into timed focus sessions that **cannot be paused or stopped**. Perfect for deep work when you need ultimate accountability.
+- Set custom durations (15m, 25m, 45m, 1h, or any time)
+- Timer locks—no pause, no stop
+- Auto-ends when complete
+- Visual countdown display
+
+### 📋 Task History
+Complete task tracking with search and filtering:
+- See everything you've accomplished
+- Search by task name or session
+- Filter by date range or session
+- Sort by date, name, or session
+- All completed tasks archived forever
+
+### 📌 Pinned Tasks
+Mark recurring tasks that persist across sessions:
+- Pin tasks once, reuse every session
+- Perfect for daily routines and repeated workflows
+- Pinned tasks reset after each session for re-completion
+
+### 🎨 Enhanced Theming
+- Smart contrast system—text automatically adjusts for readability
+- Better color handling across all themes
+- Improved visual polish and consistency
+
+### 🐛 Bug Fixes
+- Fixed website domain matching accuracy
+- Fixed session name updates in real-time
+- Improved statistics display (now shows current active session)
+- Enhanced UI synchronization
+- Better website validation
 
 ---
 
@@ -20,27 +68,35 @@
 
 ### Smart Website Blocking
 Qura blocks **all websites by default** except the ones you whitelist. No more endless scrolling or getting distracted, only access what you need.
+
+
+### 🔒 Strict Mode Timer
+Lock yourself into timed focus sessions that **cannot be paused or stopped**. Perfect for deep work when you need ultimate accountability.
 <br><br>
-<img width="2560" height="1461" alt="Website Whitelisting" src="https://github.com/user-attachments/assets/8ab89add-84e4-459f-b449-27fbb58810e3" />
+<img width="2560" height="1600" alt="image2" src="https://github.com/user-attachments/assets/35c22d93-1ce4-4bdf-9a61-a04cd0099139" />
+
+
 
 ### Multiple Sessions
 Create different focus sessions for different contexts (Work, Study, Creative). Each session has its own whitelist and color for easy identification. (Only one session can be active at a time)
 <br><br>
-<img width="2560" height="1600" alt="Multiple Sessions" src="https://github.com/user-attachments/assets/42578dc4-2598-41d5-8b7c-09190f0a9550" />
+<img width="2560" height="1600" alt="image3" src="https://github.com/user-attachments/assets/1d09bfc1-7bc1-43db-8c3d-40ccb6811b31" />
 
-### Task Sidebar
+
+### Task Management
 Click the floating button on any page during an active session to open a task sidebar. Add, complete, and manage tasks without leaving your current tab.
+- **Pin recurring tasks** – Keep tasks across sessions for daily routines
+- **Edit and delete tasks** – Full task management
+- **Track completion** – See completed count in real-time
+- **Search history** – Find any completed task from the Tasks tab
 <br><br>
-![Recording2025-12-30103953-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/4850374e-6a24-4bd8-8097-f0d1fff8dea9)
+<img width="2560" height="1600" alt="image4" src="https://github.com/user-attachments/assets/f5e42e3b-25b7-4bde-824d-e633fea4497b" />
 
 
 ### Statistics & Tracking
 Track your focus time, completed tasks, and sessions. View your weekly progress chart and session breakdown to stay motivated.
 <br><br>
-<img width="399" height="714" alt="Screenshot 2025-12-30 103539" src="https://github.com/user-attachments/assets/41fc7954-368c-4c5a-8b9c-776915723eb3" />
-
-<br><br>
-<img width="2560" height="1795" alt="stats" src="https://github.com/user-attachments/assets/5102f652-32c5-436c-b671-db24b8c2500c" />
+<img width="2946" height="1764" alt="Statistics tab" src="https://github.com/user-attachments/assets/370ff811-750b-4628-b4ca-ed24a6ee06d0" />
 
 
 ### Full Customization
@@ -52,21 +108,29 @@ Track your focus time, completed tasks, and sessions. View your weekly progress 
 ### YouTube Shorts Blocker
 Optional toggle to hide YouTube Shorts entirely, shelves, tabs, sidebar, and redirects from `/shorts/` URLs.
 <br><br>
-<img width="3938" height="2123" alt="settings1" src="https://github.com/user-attachments/assets/46b7c04b-029c-4257-ba1a-576a6108b247" />
-
-
-
+<img width="2694" height="2026" alt="settings tab" src="https://github.com/user-attachments/assets/60db3034-11a6-4c88-b142-86f87dac6a62" />
 
 
 ---
 
-## Installation (Available only for Chromium-based browsers)
+## Installation
 
-1. Download or clone this repository
-2. Open Chrome and go to `chrome://extensions/`
-3. Enable **Developer mode** (top right)
-4. Click **Load unpacked** and select the `Qura-main` folder OR drag and drop the folder directly into the extensions page
-5. Qura is now ready to use!
+> **🌐 Currently available for Chromium-based browsers** (Chrome, Edge, Brave, Opera, Vivaldi). Firefox version coming soon! <br><br>
+> Also, updates on the Chrome webstore might be late because each update requires approval, so always refer to this repo for the latest updates!
+
+### Option 1: Chrome Web Store (Recommended)
+Install directly from the [Chrome Web Store](https://chromewebstore.google.com/detail/YOUR_EXTENSION_ID) with one click.
+
+### Option 2: Manual Installation
+1. Download the latest release from the [Releases page](https://github.com/ninjaytxz/Qura/releases)
+2. Extract the ZIP file
+3. Open your browser and go to the extensions page:
+   - Chrome: `chrome://extensions/`
+   - Edge: `edge://extensions/`
+   - Brave: `brave://extensions/`
+4. Enable **Developer mode** (toggle in the top right)
+5. Click **Load unpacked** and select the extracted folder
+6. Qura is now ready to use!
 
 ---
 
@@ -80,6 +144,8 @@ Optional toggle to hide YouTube Shorts entirely, shelves, tabs, sidebar, and red
 ---
 
 ## Privacy
+<img width="2560" height="1600" alt="image5" src="https://github.com/user-attachments/assets/dd50b60c-0806-480a-9b3f-bb909327b170" />
+
 
 Qura respects your privacy:
 - **All data stays local** - stored in Chrome's local storage
